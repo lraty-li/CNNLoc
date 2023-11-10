@@ -110,15 +110,22 @@ def load(train_file_name, valid_file_name):
     valid_num = int(len(train_data_frame)/10)
     sample_row = rest_data_frame.sample(valid_num)
     rest_data_frame = rest_data_frame.drop(sample_row.index)
-    valid_data_trame = valid_data_trame.append(sample_row)
+    # valid_data_trame = valid_data_trame.append(sample_row)
+    valid_data_trame = pd.concat([valid_data_trame, sample_row], ignore_index=False)
     train_data = rest_data_frame
 
-    training_x = train_data.get_values().T[:589].T
-    training_y = train_data.get_values().T[[589, 590, 591, 592], :].T
-    validation_x = valid_data_trame.get_values().T[:589].T
-    validation_y = valid_data_trame.get_values().T[[589, 590, 591, 592], :].T
-    testing_x = test_data_frame.get_values().T[:589].T
-    testing_y = test_data_frame.get_values().T[[589, 590, 591, 592], :].T
+    training_x = train_data.to_numpy().T[:589].T
+    training_y = train_data.to_numpy().T[[589, 590, 591, 592], :].T
+    validation_x = valid_data_trame.to_numpy().T[:589].T
+    validation_y = valid_data_trame.to_numpy().T[[589, 590, 591, 592], :].T
+    testing_x = test_data_frame.to_numpy().T[:589].T
+    testing_y = test_data_frame.to_numpy().T[[589, 590, 591, 592], :].T
+    # training_x = train_data.get_values().T[:589].T
+    # training_y = train_data.get_values().T[[589, 590, 591, 592], :].T
+    # validation_x = valid_data_trame.get_values().T[:589].T
+    # validation_y = valid_data_trame.get_values().T[[589, 590, 591, 592], :].T
+    # testing_x = test_data_frame.get_values().T[:589].T
+    # testing_y = test_data_frame.get_values().T[[589, 590, 591, 592], :].T
 
     # return training_x, training_y, validation_x, validation_y, testing_x, testing_y
 
@@ -172,7 +179,8 @@ class norm_X():
 
 
 def normalizeX_powed(arr,b):
-    res = np.copy(arr).astype(np.float)
+    res = np.copy(arr).astype('float32')
+    # res = np.copy(arr).astype(np.float)
     for i in range(np.shape(res)[0]):
         for j in range(np.shape(res)[1]):
             if (res[i][j] >50)|(res[i][j]==None)|(res[i][j]<-95):

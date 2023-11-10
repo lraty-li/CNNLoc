@@ -9,10 +9,14 @@ import os
 import tensorflow as tf
 
 os.environ["CUDA_VISIBLE_DEVICES"]='0'
-from keras.backend.tensorflow_backend import set_session
-config=tf.ConfigProto()
-config.gpu_options.per_process_gpu_memory_fraction=0.6
-set_session(tf.Session(config=config))
+from keras.backend import set_session
+# from keras.backend.tensorflow_backend import set_session
+# config=tf.ConfigProto()
+config=tf.compat.v1.ConfigProto()
+# config.gpu_options.per_process_gpu_memory_fraction=0.6
+tf.compat.v1.GPUOptions(per_process_gpu_memory_fraction=0.6)
+# set_session(tf.Session(config=config))
+set_session(tf.compat.v1.Session(config=config))
 
 
 rng=np.random.RandomState(888)
@@ -44,7 +48,8 @@ if __name__ == '__main__':
 
 
     # dropout=[i for i in np.linspace(0.4,0.7,4)]
-    dropout=[1,]
+    dropout=[0.7,]
+    # dropout=[1,]
     for dp in dropout:
 
         # save_picture_dir = "picfhfg"
@@ -109,8 +114,10 @@ if __name__ == '__main__':
                     with open(log_dir,'a') as f:
                         f.write('\n\ndropout rate='+name)
                         f.write('\n\nFloor_training_acc_log bpde'+name+'\n')
-                        f.write('training acc:\n'+str(h[1].history['acc'])[1:-1])
-                        f.write('\nvalid acc:\n'+str(h[1].history['val_acc'])[1:-1])
+                        f.write('training acc:\n'+str(h[1].history['accuracy'])[1:-1])
+                        # f.write('training acc:\n'+str(h[1].history['acc'])[1:-1])
+                        f.write('\nvalid acc:\n'+str(h[1].history['val_accuracy'])[1:-1])
+                        # f.write('\nvalid acc:\n'+str(h[1].history['val_acc'])[1:-1])
                     # plt.plot(h[1].history['acc'])
                     # plt.plot(h[1].history['val_acc'])
                     # plt.title('Floor Model accuracy')
